@@ -14,8 +14,7 @@ use spaceonfire\DataSource\RepositoryInterface;
 
 /**
  * @template E of object
- * @template P
- * @implements RepositoryInterface<E,P>
+ * @implements RepositoryInterface<E>
  */
 abstract class AbstractRepository implements RepositoryInterface
 {

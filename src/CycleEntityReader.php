@@ -5,19 +5,18 @@ declare(strict_types=1);
 namespace spaceonfire\Bridge\Cycle;
 
 use Cycle\ORM\ORMInterface;
-use Cycle\ORM\Promise\Reference;
 use Cycle\ORM\Promise\ReferenceInterface;
 use Cycle\ORM\SchemaInterface;
 use Cycle\ORM\Select;
 use spaceonfire\Bridge\Cycle\Select\CriteriaScope;
 use spaceonfire\Bridge\Cycle\Select\LazySelectIterator;
+use spaceonfire\Bridge\Cycle\Select\PrimaryBuilder;
 use spaceonfire\Bridge\Cycle\Select\ScopeAggregate;
 use spaceonfire\Collection\Collection;
 use spaceonfire\Collection\CollectionInterface;
 use spaceonfire\Collection\Iterator\ArrayCacheIterator;
 use spaceonfire\Criteria\Criteria;
 use spaceonfire\Criteria\CriteriaInterface;
-use spaceonfire\Criteria\Expression\ExpressionFactory;
 use spaceonfire\DataSource\DefaultEntityNotFoundExceptionFactory;
 use spaceonfire\DataSource\EntityNotFoundExceptionFactoryInterface;
 use spaceonfire\DataSource\EntityReaderInterface;
@@ -26,14 +25,15 @@ use spaceonfire\Type\TypeInterface;
 
 /**
  * @template E of object
- * @template P
- * @implements EntityReaderInterface<E,P>
+ * @implements EntityReaderInterface<E>
  */
 final class CycleEntityReader implements EntityReaderInterface
 {
     private ORMInterface $orm;
 
     private string $role;
+
+    private PrimaryBuilder $primaryBuilder;
 
     /**
      * @var class-string<E>|null
@@ -55,15 +55,18 @@ final class CycleEntityReader implements EntityReaderInterface
     ) {
         $this->orm = $orm;
         $this->role = $this->orm->resolveRole($role);
+        $this->primaryBuilder = new PrimaryBuilder($this->orm, $this->role);
         $this->classname = $this->orm->getSchema()->define($this->role, SchemaInterface::ENTITY);
         $this->notFoundExceptionFactory = $notFoundExceptionFactory ?? new DefaultEntityNotFoundExceptionFactory();
     }
 
     public function findByPrimary($primary, ?CriteriaInterface $criteria = null): object
     {
+        $primaryBuilder = $this->primaryBuilder->withScope($primary);
+
         /** @phpstan-var E|null $entity */
-        $entity = $this->findReferenceInHeap($this->getPrimaryReference($primary))
-            ?? $this->findOne($this->getPrimaryCriteria($primary, $criteria));
+        $entity = $this->findReferenceInHeap($primaryBuilder->getReference())
+            ?? $this->findOne($primaryBuilder->getCriteria($criteria));
 
         if (null === $entity) {
             throw $this->notFoundExceptionFactory->make($this->classname ?? $this->role, $primary);
@@ -128,38 +131,6 @@ final class CycleEntityReader implements EntityReaderInterface
     private function getEntityType(): ?TypeInterface
     {
         return null === $this->classname ? null : InstanceOfType::new($this->classname);
-    }
-
-    /**
-     * @param P $primary
-     * @return ReferenceInterface
-     */
-    private function getPrimaryReference($primary): ReferenceInterface
-    {
-        if ($primary instanceof ReferenceInterface) {
-            \assert($primary->__role() === $this->role);
-            return $primary;
-        }
-
-        $pk = $this->orm->getSchema()->define($this->role, SchemaInterface::PRIMARY_KEY);
-
-        return new Reference($this->role, [
-            $pk => $primary,
-        ]);
-    }
-
-    /**
-     * @param P $primary
-     * @param CriteriaInterface|null $criteria
-     * @return CriteriaInterface
-     */
-    private function getPrimaryCriteria($primary, ?CriteriaInterface $criteria): CriteriaInterface
-    {
-        $pk = $this->orm->getSchema()->define($this->role, SchemaInterface::PRIMARY_KEY);
-
-        $ef = ExpressionFactory::new();
-
-        return ($criteria ?? Criteria::new())->where($ef->property($pk, $ef->same($primary)));
     }
 
     private function findReferenceInHeap(ReferenceInterface $reference): ?object
