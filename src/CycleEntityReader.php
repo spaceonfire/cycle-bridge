@@ -136,7 +136,7 @@ final class CycleEntityReader implements EntityReaderInterface
     {
         $object = $this->orm->get($reference->__role(), $reference->__scope(), false);
 
-        $filter = (null === $criteria ? null : $criteria->getWhere()) ?? new AlwaysTrue();
+        $filter = (null !== $criteria ? $criteria->getWhere() : null) ?? new AlwaysTrue();
 
         return \is_object($object) && $filter->evaluate($object) ? $object : null;
     }
