@@ -15,9 +15,7 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 
 final class MigratorFreshCommand extends Command implements MigratorApplyCommandInterface
 {
-    public const DEFAULT_NAME = 'migrator:fresh';
-
-    protected static $defaultName = self::DEFAULT_NAME;
+    protected static $defaultName = 'migrator:fresh';
 
     protected static $defaultDescription = 'Drop all tables and run all migrations from scratch';
 

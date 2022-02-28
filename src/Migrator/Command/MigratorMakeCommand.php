@@ -15,9 +15,7 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 
 final class MigratorMakeCommand extends Command
 {
-    public const DEFAULT_NAME = 'migrate:make';
-
-    protected static $defaultName = self::DEFAULT_NAME;
+    protected static $defaultName = 'migrator:make';
 
     protected static $defaultDescription = 'Create a new migration file';
 

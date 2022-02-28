@@ -15,9 +15,7 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 
 final class MigratorDownCommand extends Command implements MigratorApplyCommandInterface
 {
-    public const DEFAULT_NAME = 'migrator:down';
-
-    protected static $defaultName = self::DEFAULT_NAME;
+    protected static $defaultName = 'migrator:down';
 
     protected static $defaultDescription = 'Rollback executed database migrations';
 
@@ -47,7 +45,7 @@ final class MigratorDownCommand extends Command implements MigratorApplyCommandI
 
     public function getMigrationsCount(InputInterface $input): int
     {
-        return \max($this->count->getValueFrom($input) ?? 0, 0);
+        return (int)\max($this->count->getValueFrom($input) ?? 0, 0);
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int

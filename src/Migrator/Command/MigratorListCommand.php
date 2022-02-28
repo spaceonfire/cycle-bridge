@@ -13,9 +13,7 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 
 final class MigratorListCommand extends Command
 {
-    public const DEFAULT_NAME = 'migrator:list';
-
-    protected static $defaultName = self::DEFAULT_NAME;
+    protected static $defaultName = 'migrator:list';
 
     protected static $defaultDescription = 'List all available migrations with their statuses';
 

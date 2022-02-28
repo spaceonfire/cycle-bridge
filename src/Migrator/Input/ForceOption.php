@@ -15,6 +15,8 @@ use Symfony\Component\Console\Style\StyleInterface;
  */
 final class ForceOption extends InputOption
 {
+    private bool $confirmDefault;
+
     private string $confirmQuestion;
 
     /**
@@ -27,14 +29,15 @@ final class ForceOption extends InputOption
         bool $default = false,
         string $confirmQuestion = 'Would you like to continue?'
     ) {
-        parent::__construct($name, $shortcut, self::VALUE_NONE, $description, $default);
+        parent::__construct($name, $shortcut, self::VALUE_NONE, $description);
 
+        $this->confirmDefault = $default;
         $this->confirmQuestion = $confirmQuestion;
     }
 
     public function getDefault(): bool
     {
-        return (bool)parent::getDefault();
+        return $this->confirmDefault;
     }
 
     /**
@@ -42,7 +45,12 @@ final class ForceOption extends InputOption
      */
     public function setDefault($default = null): void
     {
-        parent::setDefault((bool)$default);
+        $this->confirmDefault = (bool)$default;
+    }
+
+    public function getConfirmQuestion(): string
+    {
+        return $this->confirmQuestion;
     }
 
     public function setConfirmQuestion(string $confirmQuestion): void

@@ -15,9 +15,7 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 
 final class MigratorUpCommand extends Command implements MigratorApplyCommandInterface
 {
-    public const DEFAULT_NAME = 'migrator:up';
-
-    protected static $defaultName = self::DEFAULT_NAME;
+    protected static $defaultName = 'migrator:up';
 
     protected static $defaultDescription = 'Run database migrations';
 
@@ -47,7 +45,7 @@ final class MigratorUpCommand extends Command implements MigratorApplyCommandInt
 
     public function getMigrationsCount(InputInterface $input): int
     {
-        return \max($this->count->getValueFrom($input) ?? 0, 0);
+        return (int)\max($this->count->getValueFrom($input) ?? 0, 0);
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int

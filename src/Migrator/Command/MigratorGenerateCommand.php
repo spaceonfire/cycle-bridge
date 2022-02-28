@@ -14,9 +14,7 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 
 final class MigratorGenerateCommand extends Command
 {
-    public const DEFAULT_NAME = 'migrator:generate';
-
-    protected static $defaultName = self::DEFAULT_NAME;
+    protected static $defaultName = 'migrator:generate';
 
     protected static $defaultDescription = 'Generate migrations from Cycle ORM schema';
 

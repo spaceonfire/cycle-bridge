@@ -15,9 +15,7 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 
 final class MigratorSyncCommand extends Command
 {
-    public const DEFAULT_NAME = 'migrator:sync';
-
-    protected static $defaultName = self::DEFAULT_NAME;
+    protected static $defaultName = 'migrator:sync';
 
     protected static $defaultDescription = 'Direct database synchronization with Cycle ORM schema (risk operation)';
 

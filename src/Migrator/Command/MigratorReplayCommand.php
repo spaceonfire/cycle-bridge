@@ -15,9 +15,7 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 
 final class MigratorReplayCommand extends Command implements MigratorApplyCommandInterface
 {
-    public const DEFAULT_NAME = 'migrator:replay';
-
-    protected static $defaultName = self::DEFAULT_NAME;
+    protected static $defaultName = 'migrator:replay';
 
     protected static $defaultDescription = 'Rollback then run migrations';
 
@@ -47,7 +45,7 @@ final class MigratorReplayCommand extends Command implements MigratorApplyComman
 
     public function getMigrationsCount(InputInterface $input): int
     {
-        return \max($this->count->getValueFrom($input) ?? 0, 0);
+        return (int)\max($this->count->getValueFrom($input) ?? 0, 0);
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int
