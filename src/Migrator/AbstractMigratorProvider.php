@@ -48,7 +48,7 @@ abstract class AbstractMigratorProvider extends AbstractServiceProvider
 
         yield DefinitionTag::CONSOLE_COMMAND;
 
-        foreach (self::COMMANDS as $command) {
+        foreach (static::COMMANDS as $command) {
             if ($this->isCommandAvailable($command)) {
                 yield $command;
             }
@@ -60,7 +60,7 @@ abstract class AbstractMigratorProvider extends AbstractServiceProvider
         $this->getContainer()->define(MigrationConfig::class, [$this, 'makeMigrationConfig'], true);
         $this->getContainer()->define(Migrator::class, [$this, 'makeMigrator'], true);
 
-        foreach (self::COMMANDS as $command) {
+        foreach (static::COMMANDS as $command) {
             $this->registerCommand($command);
         }
     }
